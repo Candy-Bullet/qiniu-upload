@@ -7,6 +7,7 @@ import { UploadCompleteData } from 'qiniu-js/esm/api'
 
 class QiNiuUpload {
   config: UploadConfig
+
   constructor(config: UploadConfig) {
     this.config = config
     const region = qiniu.region[config.region]
@@ -16,6 +17,7 @@ class QiNiuUpload {
     }
     this.config.region = region
   }
+
   /**
    * 上传
    * 大于 4M 时可分块上传，小于 4M 时直传
@@ -23,7 +25,6 @@ class QiNiuUpload {
    * 如果取消上传那么想要继续上传剩下的
    * 直接重新调用这个上传方法就行
    */
-
   upload(file: File, next?: (res: UploadProgress) => void): Promise<UploadProgress> {
     let promise: Promise<UploadProgress>
     promise = new Promise((resolve, reject) => {
@@ -81,6 +82,10 @@ class QiNiuUpload {
     })
     return promise
   }
+  /**
+   * 七牛不支持多文件上传
+   * 客户循环依次上传
+   */
   uploadMulti(
     files: File[],
     next?: (loader: number, size: number) => void
